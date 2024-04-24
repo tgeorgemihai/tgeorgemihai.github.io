@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Tanasescu George Mihai - Under construction</title>
+
+	<!--Import Google Icon Font-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<!--Materialize Compiled and minified JavaScript-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!--Import jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+	<!-- Materialize Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<!-- Temp CSS -->
+	<style type="text/css">
+		#iframe{
+			width: 100%;
+			height: 60vh;
+		}
+
+		#proj-list {
+			height: 90vh;
+			overflow-x: hidden;
+		}
+
+		#proj-desc {
+			width: 100%;
+			height: 30vh;
+			overflow-x: hidden;
+		}
+	</style>
+
+
+
+
+</head>
+
+<body>
+
+	<!-- Top Navbar -->
+	<nav>
+		<div class="nav-wrapper">
+			<a href="#!" class="brand-logo center">Projects</a>
+			<a href="#" data-target="mobile-sidenav" class="sidenav-trigger hide-on-med-and-up"><i class="material-icons">menu</i></a>
+
+			<ul class="right">
+				<li><a id="btn-new-tab" href="#" target="_blank"><i class="material-icons right">collections</i><span class="hide-on-small-only">Open in new Tab</span></a></li>
+			</ul>
+		</div>
+	</nav>
+
+<!-- The sidebar used only on the mobile -->
+<div class="sidenav" id="mobile-sidenav">
+	<!-- Load projects list -->
+	<p>My projects:</p>
+</div>
+
+
+<div id="main" class="row">
+
+	<!-- Left side with the list -->
+	<div id="proj-list" class="col m4 hide-on-small-only">
+ 	<p>My projects:</p>
+
+ </div>
+
+ <!-- Right side with the iFrame and game -->
+ <div class="col s12 m8">
+
+ 	<!-- set the default src for iframe to my presentation -->
+	<iframe id="iframe" src="myprojects/me/index.html" frameBorder="0">
+	   <p>Your browser does not support iframes.</p>
+   </iframe>
+   <div id="proj-desc"></div>
+</div>
+</div>
+
+
+
+
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript">
+	
+// execute the script after the document has finished loading
+$(document).ready(function(){
+
+	// Materialize CSS - Activte the Mobile Collapse Button (using jQuery)
+	$('#mobile-sidenav').sidenav();
+	
+	/*
+	// Activte the Mobile Collapse Button (using pure Javascript)
+	document.addEventListener('DOMContentLoaded', function() {
+		var elems = document.querySelectorAll('.sidenav');
+		var instances = M.Sidenav.init(elems, options);
+	});
+	*/
+
+	// the main list with all the details about the projects; manually created
+	var myList = [
+		{"id":"launchthecookieman2", "name":"Launch the CookieMan (V2)"},
+		{"id":"launchthecookieman1", "name":"Launch the CookieMan (V1)"},
+		{"id":"colorblocks", "name":"Puzzle Platformer (Color Blocks)"},
+		{"id":"websockettest", "name":"Node.js & WebSocket Test"},
+		{"id":"maileditor", "name":"Mail Content Editor"},
+		{"id":"caveman", "name":"Caveman"},
+		{"id":"floodfillexample", "name":"Flood Fill Example"}
+	];
+	// Project URL is myprojects/<id> (and maybe index.html)
+	// Project's Cover picture URL will be myprojects/about/<id>.png
+	// Project's detalied content URL will be myprojects/about/<id>.html
+	// "desc" is a short description, different from Project's detalied content
+
+
+	// create var i for loops
+	var i;
+	// create var htmlString to store a string
+	var htmlString; // Multiline String Variables in JavaScript: add "\" after each line
+
+	// after page loads, generate the games list
+	for (i = 0; i < myList.length; i++) {
+
+
+		//console.log('loop: '+ myList[i].id);
+
+
+		// build the html string
+		htmlString = '\
+		<div class="card">\
+			<div class="card-image">\
+				<img src="myprojects/about/'+ myList[i].id +'.png">\
+			</div>\
+			<div class="card-content">\
+				<span class="card-title grey-text text-darken-4">'+ myList[i].name +'</span>\
+			</div>\
+			<div class="card-action">\
+				<p><a id="'+ myList[i].id +'" class="waves-effect waves-light btn-game btn-small float-right"><i class="material-icons right">arrow_right</i>Start</a></p>\
+			</div>\
+		</div>';
+
+		// class btn-game is used to identify these buttons
+		// button's id is the same as myList[i].id
+
+
+		// add it to the desktop side
+		$( '#proj-list' ).append( htmlString );
+		// add it to the mobile side
+		$( '#mobile-sidenav' ).append( htmlString );
+
+		//console.log( htmlString );
+
+	}
+
+	// Change iFrame src based on the pressed button with class .btn-game
+	// var tempId will be used to store the pressed button Id
+	var tempId;
+
+	// On .btn-game click
+
+	$( '.btn-game' ).click(function() {
+
+		// close the sidebar nav
+		$('#mobile-sidenav').sidenav('close');
+
+		// store the id of the clicked button for easy access
+		tempId = $(this).attr("id");
+
+		// search the list array for the id
+		for (i = 0; i < myList.length; i++) {
+
+			// if the id is found
+			if (myList[i].id == tempId) {
+
+				// change the src of the iframe
+				$( "#iframe").attr('src', 'myprojects/'+ myList[i].id +'/index.html');
+
+				// Other changes to add HERE
+
+				// change the url for the "Open in new tab" button
+				$( "#btn-new-tab" ).attr("href", 'myprojects/'+ myList[i].id +'/index.html');
+
+
+				// Update the full description; the link is myprojects/about/<id>.html
+				$('#proj-desc').load( 'myprojects/about/'+ myList[i].id +'.html', function( response, status, xhr ) {
+					if ( status == "error" ) {
+						var msg = "Sorry but there was an error: ";
+						$( "#game-desc" ).html( msg + xhr.status + " " + xhr.statusText );
+					}
+				});
+
+
+				// job done; end the loop
+				break;
+
+			}
+
+		}
+
+	});
+
+
+
+
+
+
+});	
+
+</script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--Import Google Icon Font-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+	<!--Import materialize.css-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Compiled and minified JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <!-- jQuery 3.4.1 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- jQuery UI -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+	<!--Import Summernote editor -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.js"></script>
+
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<style>
+
+		/* jQuery UI -> Sortable */
+		#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+		#sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em;}
+		/*html>body #sortable li { line-height: 1.2em; }*/
+		.ui-state-highlight { height: 3.5em; line-height: 1.2em; }
+
+	</style>
+
+</head>
+
+
+
+
+<body>
+
+	<div class="row">
+		<div class="col s6">
+
+			<!-- Dropdown Trigger -->
+			<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Select Profile</a>
+
+			<!-- Dropdown Structure -->
+			<ul id='dropdown1' class='dropdown-content'>
+				<li><a href="#!">Maintenance</a></li>
+				<li><a href="#!">Fed Release</a></li>
+			</ul>
+
+
+			<p>Editor:</p>
+
+
+				<table>
+					<tr>
+						<td><label>color</label></td>
+						<td><label>prefix</label></td>
+						<td><label>title</label></td>
+						<td><label>date</label></td>
+					</tr>
+					<tr>
+						<td style="width: 60px;">
+							<input id="main-color" type="color" name="favcolor" value="#ff0000">
+						</td>
+						<td style="width: 150px;">
+							<select id="main-prefix" class="browser-default">
+								<option value="none" selected="selected">none</option>
+								<option value="maintenance">[Maintenance]</option>
+								<option value="urgent-maintenance">[Urgent][Maintenance]</option>
+								<option value="fed-release" >Federation Release</option>
+								<option value="3">Option 3</option>
+							</select>
+						</td>
+						<td>
+							<input id="main-title" type="text" value="" style="width: 100%;">
+						</td>
+						<td style="width: 150px;">
+							<input type="text" class="datepicker">
+						</td>
+					</tr>
+				</table>
+
+				<br>
+
+				<ul id="sortable">
+					<!-- <li class="ui-state-default">Item 1</li> -->
+				</ul>
+
+				<br/>
+
+				<a id="btn-add" class="waves-effect waves-light btn">ADD new</a>
+				<a id="btn-generate-final-code" class="waves-effect waves-light btn">Generate Mail</a>
+
+
+
+
+
+
+			</div>
+
+
+
+
+
+			<div class="col s6">
+
+
+				<label>
+					<input type="checkbox" id="live-preview" checked/>
+					<span>Live Preview</span>
+				</label>
+				
+				<iframe id="preview" src="" style="width:100%; height:80vh"></iframe>
+
+			</div>
+
+
+
+		</div>
+
+		<!-- Modal -->
+		<div id="dialog" title="HTML CODE"></div>
+
+
+	<!--JavaScript at end of body for optimized loading-->
+	<script>
+
+	// Exectue script when "document is ready"
+	$( document ).ready(function() {
+
+
+		// To add posibility to get these values at start from url GET
+		var html_code = "";
+		//var default_color = '#434954';
+		//var default_title = 'BDC-SERVICES-FW - June 2nd 2019';
+	//	var default_prefix = 'none';
+
+		// default profile to 'maintenance';
+		var profile = 'maintenance';
+
+		// profile-name is the same as prefix		'profile_name':[color,title, [['heading1,"text1"],["heading2","text2"]] ]
+		var profiles_list = {	"maintenance":["#434954", "Some maintenance title", [["Summary","WOA team will perform a global CDN operation by switching from Helios to Akamai for users from following countries: AU, JP, PH, RO, RU.\
+																									This should be transparent for game teams but if any issues are reported please contact the team in charge with the operation, keeping OTS in CC.\
+																									If there are any reasons why this maintenance shouldn't be performed, please let us know as soon as possible."],
+																				["Start date","15 March 2018 15:00"],
+																				["End date","15 March 2018 16:00"],
+																				["Detailed information","Helios will soon be completely removed from our CDN list due to pricing considerations. Akamai will take its place and for this we need to gradually switch CDN configurations from Iris."],
+																				["Contact","online-adm@gameloft.com"],
+																				["Other notes","This maintenance and other events can be seen in Global Calendar: https://woa.gameloft.org/portal"]]
+																				],
+								"fed-release":["#97ce0c", "Fed release on <SILO>", [["","<p>Hello,</p>\
+																						We are starting Federation update on <SILO> silo:\
+																						<ul>\
+																						<li>Matchmaking - Anubis (v. 1.107.46-0)</li>\
+																						<li>Authentication - Janus (v. 3.53.53-0)</li>\
+																						</ul>\
+																						All relevant services on APA will be restarted after the update.\
+																						Release notes: http://palantir.gameloft.org/releases.html\
+																						Thank you,"]]
+																				]
+						}
+
+		//function to check for $_GET parameters --> pure Javascript
+		var urlParams;
+		(window.onpopstate = function () {
+			var match,
+				pl     = /\+/g,  // Regex for replacing addition symbol with a space
+				search = /([^&=]+)=?([^&]*)/g,
+				decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+				query  = window.location.search.substring(1);
+
+			urlParams = {};
+			while (match = search.exec(query))
+				urlParams[decode(match[1])] = decode(match[2]);
+		})();
+
+		//console.log( urlParams );
+	
+
+
+		// Chech if there is actually any other profile that can be found in profiles_list (if not, it remains defaulted to 'maintenance');
+		for (var i in profiles_list) {
+
+			if (urlParams.profile == i) {
+
+				profile = i;
+			}
+		}
+
+		//console.log( 'FINAL profile:' + profile );
+
+		// The 'auto-setup' of the page starts here
+		// All of this is based on the variable 'profile'
+
+
+		// set the color
+		$( "#main-color" ).val( profiles_list[profile][0] );
+
+		// set the prefix (is the same as the variable 'profile')
+		$( "#main-prefix" ).val( profile );
+
+		// set the Title
+		$( "#main-title" ).val( profiles_list[profile][1] );
+
+		// populate the sortable list
+
+		for (var i = 0; i < profiles_list[profile][2].length; ++i) {
+
+			//console.log(profiles_list[profile][2][i][0] + profiles_list[profile][2][i][1]);
+
+			$( "#sortable" ).append( add_sortable_list_element(profiles_list[profile][2][i][0], profiles_list[profile][2][i][1]) );
+		}
+
+
+
+		// Function to create a sortable element
+		function add_sortable_list_element (heading, content){
+			return '<li class="ui-state-default sortable-item">\
+						<input type="text" value="' + heading + '" class="heading"><br>\
+						<div class="content">' + content + '</div>\
+						<a class="btn-handle-this btn">MOVE</a>\
+						<a class="btn-remove-this btn">Delete</a>\
+					</li>';
+		}
+
+		
+
+		// jQuery UI -> Sortable
+		$( function() {
+			$( "#sortable" ).sortable({
+				handle: '.btn-handle-this', // sortable items can be dragged and moved only with the item that has class="handle"
+				placeholder: 'ui-state-highlight',
+				axis: 'y'
+			});
+			//$( "#sortable" ).disableSelection(); // remove to fix Summernote editor "Summernote + jQuery UI Sortable cannot input text #1174"
+		});
+
+
+
+
+		// GENERATE !!! the final HTML code based on the content of sortable list
+		function generate_html_code() {
+
+			// clear the variable html_code
+			html_code = "";
+
+			html_code += '<table style="width:98%; border: 1px solid grey; border-radius: 8px; margin: auto; padding: 20px;">';
+
+			html_code += '<tr><td style="font-family: Arial, sans-serif, \'Open Sans\'; padding: 15px 10px; color:#fff; font-weight: bold;  background-color:' + $( "#main-color" ).val() + '; border-radius: 4px; ">';
+			html_code += $('#main-prefix :selected').text() + ' ' + $('#main-title').val() + ' - ' + $('.datepicker').val() + '</td></tr>';
+
+
+			// go trough each .li of list #sortable
+			$( ".sortable-item" ).each(function(){
+
+				//html_code = html_code + $(this).text();
+
+
+				html_code += '<tr><td style="font-family: Arial, sans-serif, \'Open Sans\'; font-size: 11pt;  border-bottom: 1px dotted '+ $( "#main-color" ).val() +'; padding-top: 10px; padding: 0px 15px;">';
+				html_code += '<p style="font-weight: bold; color: #555">' + $( this ).find('.heading').val() + '</p>';
+				html_code += '<p>' + $( this ).find('.content').html() + '</p>';
+				html_code += '</td></tr>';
+
+			});
+
+
+			html_code += '</table>';
+
+			return html_code;
+
+		}
+		// END GENERATE
+
+
+
+
+
+		// Add a new sortable element at the bottom of the list
+		$( "#btn-add" ).click(function() {
+
+			$(add_sortable_list_element ('heading', 'content')).appendTo('#sortable').hide().fadeIn(400);
+
+		});
+
+
+
+
+		// on button press generate html code
+		$( "#btn-generate-final-code" ).click(function(){
+
+			
+			$( "#dialog" ).text( generate_html_code() );
+			$( "#dialog" ).dialog({width: 800,height:600});
+
+
+		});
+
+
+		// Live preview
+		setInterval(function(){
+			// If live-preview is enabled
+			if( $('#live-preview').is(':checked') ){
+				
+					$( '#preview' ).contents().find('body').html( function(){
+						$( "#preview" ).contents().find('body').html( generate_html_code() );
+					});
+
+				}
+			}, 600);
+
+
+
+
+		// This method is used for dianmically created buttons to delete the sortable list elements
+		$(document).on("click", '.btn-remove-this' , function() {
+				// select the parent of this button (in this case the li)
+				$(this).parent().fadeOut( 400, function() {
+				// after fadeOut animation is complete.
+				//remove the li element
+				$(this).remove();
+			});
+		});
+
+
+
+
+			// Enable summernote editor when a content is clicked and delete the other instances
+			$(document).on('click', '.content' , function() {
+
+				// destroy current instance
+				$('.summernote').summernote('destroy');
+
+				$( '#sortable li .content' ).each(function() {
+					
+					// Remove the class 'summernote' from all '#sortable li .content'
+					$(this).removeClass('summernote');
+
+				});
+
+				// Add class 'summernote' only to this specific '#sortable li .content' element in order to attach to it the summernote editor
+				$(this).addClass( 'summernote' );
+
+	
+				//create new instance of Summernote with onChange Callback
+				$('.summernote').summernote({
+					callbacks: {
+
+						// On any change in text editor content
+						onChange: function() {
+
+							// To the .summernote <div> update it with the current (updated) code from the editor
+							// This is a workaround in order to enable Live Preview even when editing
+							$('.summernote').html( $(".summernote").summernote("code") );
+
+
+						}
+					}
+				});
+
+		
+			});
+
+
+
+
+
+		// datepicker Initialization (the one from the title)
+		//    initialization ---V (date format June 11, 2019 )			V----method invokation (default to current day)
+		$( ".datepicker" ).datepicker({dateFormat: 'MM dd, yy'}).datepicker("setDate", new Date());
+
+		// Initialization for materializecss dropdown list with predefined profiles
+		$('.dropdown-trigger').dropdown();
+
+
+
+		// End of "document is ready"
+		});
+
+
+	</script>
+
+
+
+
+
+</body>
+</html>
