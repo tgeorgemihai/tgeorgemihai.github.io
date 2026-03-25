@@ -1,0 +1,48 @@
+h1 {
+    color: chocolate;
+    text-align: center;
+}
+
+p {
+    color: blue;
+    text-align: center;
+}
+
+.game {
+    margin: 0 15%;
+}
+
+button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #727272;
+}
+
+.box {
+    background-color: #c5fa7f;
+    width: 200px;
+    height: 200px;
+    margin: 40px;
+    display: inline-block;
+    border-radius: 20px;
+    box-shadow: 1px 8px 20px #435a54;
+}
+
+
+.to-right {
+    float: right;
+}
+
+
+.has-cat {
+    background-image: url("files/cat.gif");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.has-cat:hover {
+    cursor: url("files/hand.png"), auto;
+}
